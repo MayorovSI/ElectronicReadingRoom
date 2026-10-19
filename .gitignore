@@ -1,0 +1,20 @@
+﻿# Служебные папки AI
+.qwen/
+.codex/
+.copilot/
+
+# Артефакты сборки .NET
+bin/
+obj/
+
+# База данных
+*.db
+*.db-shm
+*.db-wal
+
+# Загруженные файлы
+uploads/
+
+# Системный мусор
+.DS_Store
+Thumbs.db
