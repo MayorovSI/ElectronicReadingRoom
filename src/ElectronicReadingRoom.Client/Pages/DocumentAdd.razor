@@ -1,0 +1,239 @@
+@page "/documents/add"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject ModeService ModeService
+@implements IDisposable
+
+<PageTitle>Добавить документ</PageTitle>
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/catalog">Каталог</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Добавить документ</li>
+    </ol>
+</nav>
+
+<h1 class="mb-4">Добавить документ</h1>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <section class="form-section">
+                    <h2 class="form-section-title">Основные данные</h2>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Название <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control @(_validationAttempted && string.IsNullOrWhiteSpace(_title) ? "is-invalid" : "")" @bind="_title"
+                           placeholder="Введите название произведения" />
+                    @if (_validationAttempted && string.IsNullOrWhiteSpace(_title)) { <div class="field-error">Укажите название документа.</div> }
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Авторы <span class="text-danger">*</span></label>
+                          <input type="text" class="form-control @(_validationAttempted && string.IsNullOrWhiteSpace(_authors) ? "is-invalid" : "")" @bind="_authors"
+                           placeholder="Имена авторов через запятую" />
+                          @if (_validationAttempted && string.IsNullOrWhiteSpace(_authors)) { <div class="field-error">Укажите хотя бы одного автора.</div> }
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Год издания <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control @(_validationAttempted && _year < 1 ? "is-invalid" : "")" @bind="_year" />
+                    @if (_validationAttempted && _year < 1) { <div class="field-error">Укажите корректный год издания.</div> }
+                </div>
+                </section>
+
+                <section class="form-section">
+                    <h2 class="form-section-title">Дополнительно</h2>
+                <div class="mb-3">
+                    <label class="form-label">Издательство</label>
+                    <input type="text" class="form-control" @bind="_publisher" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Аннотация</label>
+                    <textarea class="form-control" @bind="_annotation" rows="4"></textarea>
+                </div>
+                </section>
+
+                <section class="form-section">
+                    <h2 class="form-section-title">Жанры</h2>
+                <div class="mb-3">
+                    <label class="form-label">Жанры</label>
+                    @if (_allGenres.Any())
+                    {
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach (var genre in _allGenres)
+                            {
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input"
+                                           id="genre-@genre.Id"
+                                           checked="@_selectedGenreIds.Contains(genre.Id)"
+                                           @onchange="e => ToggleGenre(genre.Id, (bool)(e.Value ?? false))" />
+                                    <label class="form-check-label" for="genre-@genre.Id">@genre.Name</label>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <small class="text-muted">Жанры не созданы. Добавьте их в разделе «Жанры».</small>
+                    }
+                </div>
+                </section>
+
+                <section class="form-section">
+                    <h2 class="form-section-title">Файл</h2>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Файл <span class="text-danger">*</span></label>
+                    <InputFile class="@($"form-control {(_validationAttempted && _selectedFile is null ? "is-invalid" : "")}")" accept=".pdf,.epub,.djvu,.txt,.docx"
+                               OnChange="OnFileSelected" />
+                    <div class="form-text">Поддерживаемые форматы: PDF, EPUB, DJVU, TXT, DOCX</div>
+                    @if (_validationAttempted && _selectedFile is null) { <div class="field-error">Выберите файл для загрузки.</div> }
+                    @if (_selectedFile is not null)
+                    {
+                        <span class="badge bg-success mt-1">Выбран: @_selectedFile.Name</span>
+                    }
+                </div>
+                </section>
+
+                @if (!string.IsNullOrEmpty(_errorMessage))
+                {
+                    <div class="alert alert-danger">@_errorMessage</div>
+                }
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" @onclick="OnSubmit"
+                            disabled="@_isSubmitting">
+                        @if (_isSubmitting)
+                        {
+                            <span class="spinner-border spinner-border-sm me-1"></span>
+                        }
+                        @(_isSubmitting ? "Загрузка..." : "Добавить")
+                    </button>
+                    <a class="btn btn-outline-secondary" href="/catalog">Отмена</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string _title = "";
+    private string _authors = "";
+    private int _year = 2024;
+    private string _publisher = "";
+    private string _annotation = "";
+    private List<Genre> _allGenres = [];
+    private HashSet<int> _selectedGenreIds = [];
+    private IBrowserFile? _selectedFile;
+    private string _errorMessage = "";
+    private bool _isSubmitting;
+    private bool _validationAttempted;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!ModeService.IsLibrarian)
+        {
+            Navigation.NavigateTo("/catalog");
+            return;
+        }
+
+        ModeService.ModeChanged += HandleModeChanged;
+        try
+        {
+            _allGenres = await Http.GetFromJsonAsync<List<Genre>>("api/genres") ?? [];
+        }
+        catch
+        {
+            _allGenres = [];
+        }
+    }
+
+    private void HandleModeChanged()
+    {
+        if (!ModeService.IsLibrarian)
+            Navigation.NavigateTo("/catalog");
+    }
+
+    public void Dispose() => ModeService.ModeChanged -= HandleModeChanged;
+
+    private void ToggleGenre(int id, bool selected)
+    {
+        if (selected) _selectedGenreIds.Add(id);
+        else _selectedGenreIds.Remove(id);
+    }
+
+    private void OnFileSelected(InputFileChangeEventArgs e)
+    {
+        _selectedFile = e.File;
+    }
+
+    private async Task OnSubmit()
+    {
+        _errorMessage = "";
+        _validationAttempted = true;
+
+        if (string.IsNullOrWhiteSpace(_title))
+        {
+            _errorMessage = "Укажите название документа.";
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(_authors))
+        {
+            _errorMessage = "Укажите хотя бы одного автора.";
+            return;
+        }
+        if (_year < 1)
+        {
+            _errorMessage = "Укажите корректный год издания.";
+            return;
+        }
+        if (_selectedFile is null)
+        {
+            _errorMessage = "Выберите файл для загрузки.";
+            return;
+        }
+
+        _isSubmitting = true;
+
+        try
+        {
+            using var content = new MultipartFormDataContent();
+            content.Add(new StringContent(_title), "title");
+            content.Add(new StringContent(_year.ToString()), "year");
+            if (!string.IsNullOrWhiteSpace(_publisher))
+                content.Add(new StringContent(_publisher), "publisher");
+            if (!string.IsNullOrWhiteSpace(_annotation))
+                content.Add(new StringContent(_annotation), "annotation");
+            content.Add(new StringContent(_authors), "authorNames");
+            if (_selectedGenreIds.Any())
+                content.Add(new StringContent(string.Join(",", _selectedGenreIds)), "genreIds");
+
+            using var stream = _selectedFile.OpenReadStream(maxAllowedSize: 100 * 1024 * 1024);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            ms.Position = 0;
+            content.Add(new StreamContent(ms), "file", _selectedFile.Name);
+
+            var response = await Http.PostAsync("api/documents", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Navigation.NavigateTo("/catalog");
+            }
+            else
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                _errorMessage = $"Ошибка сервера ({(int)response.StatusCode}): {body}";
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Ошибка: {ex.Message}";
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+}

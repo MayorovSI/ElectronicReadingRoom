@@ -1,0 +1,63 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = ElectronicReadingRoom.Client
+build_property.RootNamespace = ElectronicReadingRoom.Client
+build_property.ProjectDir = C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Client\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = false
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Client
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/miste/Projects/ElectronicReadingRoom/src/ElectronicReadingRoom.Client/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/miste/Projects/ElectronicReadingRoom/src/ElectronicReadingRoom.Client/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/miste/Projects/ElectronicReadingRoom/src/ElectronicReadingRoom.Client/Pages/Catalog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0YWxvZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/miste/Projects/ElectronicReadingRoom/src/ElectronicReadingRoom.Client/Pages/DocumentAdd.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRG9jdW1lbnRBZGQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/miste/Projects/ElectronicReadingRoom/src/ElectronicReadingRoom.Client/Pages/DocumentDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRG9jdW1lbnREZXRhaWxzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/miste/Projects/ElectronicReadingRoom/src/ElectronicReadingRoom.Client/Pages/DocumentEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRG9jdW1lbnRFZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/miste/Projects/ElectronicReadingRoom/src/ElectronicReadingRoom.Client/Pages/DocumentViewer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRG9jdW1lbnRWaWV3ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/miste/Projects/ElectronicReadingRoom/src/ElectronicReadingRoom.Client/Pages/GenreManagement.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcR2VucmVNYW5hZ2VtZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/miste/Projects/ElectronicReadingRoom/src/ElectronicReadingRoom.Client/Pages/Landing.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGFuZGluZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/miste/Projects/ElectronicReadingRoom/src/ElectronicReadingRoom.Client/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 

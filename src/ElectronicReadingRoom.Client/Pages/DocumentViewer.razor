@@ -1,0 +1,171 @@
+@page "/viewer/{id:int}"
+@inject ApiService ApiService
+@inject IJSRuntime JS
+@implements IDisposable
+
+<PageTitle>Чтение: @(document?.Title ?? "")</PageTitle>
+
+@if (document is null)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+        </div>
+    </div>
+}
+else
+{
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/catalog">Каталог</a></li>
+            <li class="breadcrumb-item"><a href="/documents/@document.Id">@document.Title</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Чтение</li>
+        </ol>
+    </nav>
+
+    <div class="viewer-heading">
+        <h4 class="mb-0">@document.Title</h4>
+        <a class="btn btn-outline-secondary btn-sm" href="/documents/@document.Id">
+            &larr; К описанию
+        </a>
+    </div>
+
+    <div class="viewer-toolbar mb-3">
+            <div class="btn-group btn-group-sm" role="group">
+                <button class="btn btn-outline-secondary" @onclick="PrevPage" disabled="@(CurrentPage <= 1)">&larr;</button>
+                <button class="btn btn-outline-secondary" @onclick="NextPage" disabled="@(CurrentPage >= _totalPages)">&rarr;</button>
+            </div>
+            <span class="text-nowrap">
+                @_pageUnit
+                <input type="number" class="form-control form-control-sm d-inline-block text-center"
+                      value="@CurrentPage" @onchange="HandlePageChange"
+                       min="1" max="@_totalPages" />
+                / @_totalPages
+            </span>
+            <span class="vr mx-1"></span>
+            <div class="btn-group btn-group-sm" role="group">
+                <button class="btn btn-outline-secondary" @onclick="ZoomOut" disabled="@(_zoom <= 0.25)">&minus;</button>
+                <button class="btn btn-outline-secondary disabled" tabindex="-1">@((int)(_zoom * 100))%</button>
+                <button class="btn btn-outline-secondary" @onclick="ZoomIn" disabled="@(_zoom >= 3.0)">&plus;</button>
+            </div>
+            <span class="vr mx-1"></span>
+            <a class="btn btn-outline-primary btn-sm" href="/api/documents/@document.Id/download" download>
+                Скачать
+            </a>
+        </div>
+
+    <div class="viewer-container viewer-content">
+        @switch (document.File?.Format)
+        {
+            case "pdf":
+                <div id="pdf-viewer" class="viewer-frame"></div>
+                break;
+            case "epub":
+                <div id="epub-viewer" class="viewer-frame"></div>
+                break;
+            case "djvu":
+                <div id="djvu-viewer" class="viewer-frame"></div>
+                break;
+            case "txt":
+                <pre id="txt-viewer" class="viewer-text mb-0 @GetTextZoomClass()">@_textContent</pre>
+                break;
+            case "docx":
+                <div id="docx-viewer" class="viewer-frame"></div>
+                break;
+            default:
+                <div class="alert alert-danger">Неподдерживаемый формат файла.</div>
+                break;
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Document? document;
+    private int CurrentPage = 1;
+    private int _totalPages = 1;
+    private double _zoom = 1.0;
+    private string? _textContent;
+    private string _pageUnit = "Стр.";
+    private bool _viewerInitialized;
+    private DotNetObjectReference<DocumentViewer>? _dotNetReference;
+
+    private string GetTextZoomClass() => $"viewer-text-zoom-{(int)(_zoom * 100)}";
+
+    protected override async Task OnInitializedAsync()
+    {
+        document = await ApiService.GetDocumentAsync(Id);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (document?.File is null || _viewerInitialized) return;
+        _viewerInitialized = true;
+        _dotNetReference = DotNetObjectReference.Create(this);
+
+        var fileUrl = $"/api/documents/{document.Id}/download";
+        _pageUnit = document.File.Format == "epub" ? "Глава" : "Стр.";
+        ViewerState state = document.File.Format switch
+        {
+            "pdf" => await JS.InvokeAsync<ViewerState>("viewerInterop.initPdfViewer", "pdf-viewer", fileUrl),
+            "epub" => await JS.InvokeAsync<ViewerState>("viewerInterop.initEpubViewer", "epub-viewer", fileUrl, _dotNetReference),
+            "djvu" => await JS.InvokeAsync<ViewerState>("viewerInterop.initDjvuViewer", "djvu-viewer", fileUrl, _dotNetReference),
+            "txt" => await JS.InvokeAsync<ViewerState>("viewerInterop.initTextViewer", "txt-viewer", fileUrl, _dotNetReference),
+            "docx" => await JS.InvokeAsync<ViewerState>("viewerInterop.initDocxViewer", "docx-viewer", fileUrl, _dotNetReference),
+            _ => new ViewerState()
+        };
+        ApplyViewerState(state);
+        _textContent = state.Content;
+        StateHasChanged();
+    }
+
+    private void ApplyViewerState(ViewerState state)
+    {
+        CurrentPage = Math.Clamp(state.CurrentPage, 1, Math.Max(state.TotalPages, 1));
+        _totalPages = Math.Max(state.TotalPages, 1);
+        _zoom = state.Zoom;
+    }
+
+    private Task PrevPage() => NavigateToPage(CurrentPage - 1);
+    private Task NextPage() => NavigateToPage(CurrentPage + 1);
+
+    private async Task HandlePageChange(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var page))
+            await NavigateToPage(page);
+    }
+
+    private async Task NavigateToPage(int page)
+    {
+        var state = await JS.InvokeAsync<ViewerState>("viewerInterop.goToPage", page);
+        ApplyViewerState(state);
+    }
+
+    private Task ZoomIn() => SetZoom(Math.Min(_zoom + 0.25, 3.0));
+    private Task ZoomOut() => SetZoom(Math.Max(_zoom - 0.25, 0.25));
+
+    private async Task SetZoom(double zoom)
+    {
+        var state = await JS.InvokeAsync<ViewerState>("viewerInterop.setZoom", zoom);
+        ApplyViewerState(state);
+    }
+
+    [JSInvokable]
+    public Task UpdateViewerState(int currentPage, int totalPages, double zoom)
+    {
+        _totalPages = Math.Max(totalPages, 1);
+        CurrentPage = Math.Clamp(currentPage, 1, _totalPages);
+        _zoom = Math.Clamp(zoom, 0.25, 3.0);
+        return InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose() => _dotNetReference?.Dispose();
+
+    private sealed class ViewerState
+    {
+        public int CurrentPage { get; set; } = 1;
+        public int TotalPages { get; set; } = 1;
+        public double Zoom { get; set; } = 1;
+        public string? Content { get; set; }
+    }
+}

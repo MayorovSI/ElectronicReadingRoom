@@ -1,0 +1,11 @@
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Core\bin\Debug\net8.0\ElectronicReadingRoom.Core.deps.json
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Core\bin\Debug\net8.0\ElectronicReadingRoom.Core.dll
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Core\bin\Debug\net8.0\ElectronicReadingRoom.Core.pdb
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Core\obj\Debug\net8.0\ElectronicReadingRoom.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Core\obj\Debug\net8.0\ElectronicReadingRoom.Core.AssemblyInfoInputs.cache
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Core\obj\Debug\net8.0\ElectronicReadingRoom.Core.AssemblyInfo.cs
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Core\obj\Debug\net8.0\ElectronicReadingRoom.Core.csproj.CoreCompileInputs.cache
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Core\obj\Debug\net8.0\ElectronicReadingRoom.Core.dll
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Core\obj\Debug\net8.0\refint\ElectronicReadingRoom.Core.dll
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Core\obj\Debug\net8.0\ElectronicReadingRoom.Core.pdb
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Core\obj\Debug\net8.0\ref\ElectronicReadingRoom.Core.dll

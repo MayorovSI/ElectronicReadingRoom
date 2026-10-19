@@ -1,0 +1,239 @@
+@page "/documents/{id:int}/edit"
+@inject ApiService ApiService
+@inject NavigationManager Navigation
+@inject ModeService ModeService
+@implements IDisposable
+
+<PageTitle>Редактирование документа</PageTitle>
+
+@if (_document is null)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+        </div>
+    </div>
+}
+else
+{
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/catalog">Каталог</a></li>
+            <li class="breadcrumb-item"><a href="/documents/@Id">@_document.Title</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Редактирование</li>
+        </ol>
+    </nav>
+
+    <h1 class="mb-4">Редактирование документа</h1>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <EditForm Model="_model" OnValidSubmit="OnSubmit" FormName="EditDocument">
+                        <section class="form-section">
+                        <h2 class="form-section-title">Основные данные</h2>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Название <span class="text-danger">*</span></label>
+                            <input class="form-control" @bind="_model.Title" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Авторы <span class="text-danger">*</span></label>
+                            <input class="form-control" value="@_authorInput" @oninput="HandleAuthorInput"
+                                placeholder="Начните вводить имя автора" />
+                            @if (_authorSuggestions.Any())
+                            {
+                                <div class="list-group mt-1 shadow-sm">
+                                    @foreach (var author in _authorSuggestions)
+                                    {
+                                        <button type="button" class="list-group-item list-group-item-action"
+                                                @onclick="() => SelectAuthor(author)">@author.Name</button>
+                                    }
+                                </div>
+                            }
+                            @if (_selectedAuthors.Any())
+                            {
+                                <div class="mt-2">
+                                    @foreach (var author in _selectedAuthors)
+                                    {
+                                        <span class="badge bg-primary me-1 py-1 px-2">
+                                            @author.Name
+                                                <button type="button" class="btn-close btn-close-white ms-1 align-middle author-remove"
+                                                    @onclick="() => RemoveAuthor(author)"></button>
+                                        </span>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Год издания <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" @bind="_model.Year" />
+                        </div>
+                        </section>
+
+                        <section class="form-section">
+                        <h2 class="form-section-title">Дополнительно</h2>
+                        <div class="mb-3">
+                            <label class="form-label">Издательство</label>
+                            <input class="form-control" @bind="_model.Publisher" />
+                        </div>
+                        </section>
+
+                        <section class="form-section">
+                        <h2 class="form-section-title">Жанры</h2>
+                        <div class="mb-3">
+                            <label class="form-label">Аннотация</label>
+                            <textarea class="form-control" @bind="_model.Annotation" rows="4"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Жанры</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var genre in _allGenres)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" class="form-check-input"
+                                               id="edit-genre-@genre.Id"
+                                               checked="@_selectedGenreIds.Contains(genre.Id)"
+                                               @onchange="e => ToggleGenre(genre.Id, (bool)(e.Value ?? false))" />
+                                        <label class="form-check-label" for="edit-genre-@genre.Id">@genre.Name</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        </section>
+
+                        <section class="form-section">
+                        <h2 class="form-section-title">Файл</h2>
+                        <div class="mb-3">
+                            <label class="form-label">Текущий файл</label>
+                            @if (_document.File is not null)
+                            {
+                                <div class="current-file">
+                                    <span class="badge-format badge-@_document.File.Format.ToLowerInvariant()">@_document.File.Format.ToUpperInvariant()</span>
+                                    <span>@FormatFileSize(_document.File.Size)</span>
+                                </div>
+                            }
+                            <label class="form-label mt-3">Заменить файл</label>
+                            <InputFile class="form-control" accept=".pdf,.epub,.djvu,.txt,.docx" OnChange="OnFileSelected" />
+                            @if (_selectedFile is not null)
+                            {
+                                <div class="form-text">Выбран новый файл: @_selectedFile.Name</div>
+                            }
+                        </div>
+                        </section>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                            <a class="btn btn-outline-secondary" href="/documents/@Id">Отмена</a>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Document? _document;
+    private Document _model = new();
+    private List<Author> _selectedAuthors = [];
+    private List<Author> _authorSuggestions = [];
+    private List<Genre> _allGenres = [];
+    private HashSet<int> _selectedGenreIds = [];
+    private string _authorInput = "";
+    private IBrowserFile? _selectedFile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!ModeService.IsLibrarian)
+        {
+            Navigation.NavigateTo("/catalog");
+            return;
+        }
+
+        ModeService.ModeChanged += HandleModeChanged;
+        _document = await ApiService.GetDocumentAsync(Id);
+        _allGenres = await ApiService.GetAllGenresAsync();
+
+        if (_document is not null)
+        {
+            _model = new Document
+            {
+                Id = _document.Id,
+                Title = _document.Title,
+                Year = _document.Year,
+                Publisher = _document.Publisher,
+                Annotation = _document.Annotation
+            };
+            _selectedAuthors = _document.DocumentAuthors.Select(da => da.Author).ToList();
+            _selectedGenreIds = _document.DocumentGenres.Select(dg => dg.GenreId).ToHashSet();
+        }
+    }
+
+    private void HandleModeChanged()
+    {
+        if (!ModeService.IsLibrarian)
+            Navigation.NavigateTo("/catalog");
+    }
+
+    public void Dispose() => ModeService.ModeChanged -= HandleModeChanged;
+
+    private async Task SearchAuthors()
+    {
+        if (_authorInput.Length < 2) { _authorSuggestions = []; return; }
+        _authorSuggestions = await ApiService.SearchAuthorsAsync(_authorInput);
+    }
+
+    private async Task HandleAuthorInput(ChangeEventArgs e)
+    {
+        _authorInput = e.Value?.ToString() ?? "";
+        await SearchAuthors();
+    }
+
+    private void SelectAuthor(Author author)
+    {
+        if (!_selectedAuthors.Any(a => a.Name == author.Name))
+            _selectedAuthors.Add(author);
+        _authorInput = "";
+        _authorSuggestions = [];
+    }
+
+    private void RemoveAuthor(Author author) => _selectedAuthors.Remove(author);
+    private void ToggleGenre(int id, bool selected)
+    {
+        if (selected) _selectedGenreIds.Add(id); else _selectedGenreIds.Remove(id);
+    }
+
+    private void OnFileSelected(InputFileChangeEventArgs e) => _selectedFile = e.File;
+
+    private static string FormatFileSize(long size) => size < 1024 * 1024
+        ? $"{size / 1024d:N0} КБ"
+        : $"{size / (1024d * 1024):N1} МБ";
+
+    private async Task OnSubmit()
+    {
+        _model.DocumentAuthors = _selectedAuthors.Select(a => new DocumentAuthor { AuthorId = a.Id, Author = a }).ToList();
+        _model.DocumentGenres = _selectedGenreIds.Select(id => new DocumentGenre { GenreId = id }).ToList();
+
+        await ApiService.UpdateDocumentAsync(_model);
+
+        if (_selectedFile is not null)
+        {
+            using var content = new MultipartFormDataContent();
+            using var stream = _selectedFile.OpenReadStream(maxAllowedSize: long.MaxValue);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            ms.Position = 0;
+            content.Add(new StreamContent(ms), "file", _selectedFile.Name);
+
+            using var http = new HttpClient { BaseAddress = new Uri(Navigation.BaseUri) };
+            await http.PutAsync($"api/documents/{Id}/file", content);
+        }
+
+        Navigation.NavigateTo($"/documents/{Id}");
+    }
+}

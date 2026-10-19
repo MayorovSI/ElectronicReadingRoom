@@ -1,0 +1,313 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Server\\ElectronicReadingRoom.Server.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Client\\ElectronicReadingRoom.Client.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Client\\ElectronicReadingRoom.Client.csproj",
+        "projectName": "ElectronicReadingRoom.Client",
+        "projectPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Client\\ElectronicReadingRoom.Client.csproj",
+        "packagesPath": "C:\\Users\\miste\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Client\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\miste\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Core\\ElectronicReadingRoom.Core.csproj": {
+                "projectPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Core\\ElectronicReadingRoom.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Components.WebAssembly": {
+              "target": "Package",
+              "version": "[8.0.30, )"
+            },
+            "Microsoft.AspNetCore.Components.WebAssembly.DevServer": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.30, )"
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.30, )",
+              "autoReferenced": true
+            },
+            "Microsoft.NET.Sdk.WebAssembly.Pack": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.30, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.NETCore.App.Runtime.Mono.browser-wasm",
+              "version": "[8.0.30, 8.0.30]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.424/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "browser-wasm": {
+          "#import": []
+        }
+      }
+    },
+    "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Core\\ElectronicReadingRoom.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Core\\ElectronicReadingRoom.Core.csproj",
+        "projectName": "ElectronicReadingRoom.Core",
+        "projectPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Core\\ElectronicReadingRoom.Core.csproj",
+        "packagesPath": "C:\\Users\\miste\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\miste\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.424/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Data\\ElectronicReadingRoom.Data.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Data\\ElectronicReadingRoom.Data.csproj",
+        "projectName": "ElectronicReadingRoom.Data",
+        "projectPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Data\\ElectronicReadingRoom.Data.csproj",
+        "packagesPath": "C:\\Users\\miste\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Data\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\miste\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Core\\ElectronicReadingRoom.Core.csproj": {
+                "projectPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Core\\ElectronicReadingRoom.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.19, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[8.0.19, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.424/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Server\\ElectronicReadingRoom.Server.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Server\\ElectronicReadingRoom.Server.csproj",
+        "projectName": "ElectronicReadingRoom.Server",
+        "projectPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Server\\ElectronicReadingRoom.Server.csproj",
+        "packagesPath": "C:\\Users\\miste\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Server\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\miste\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Client\\ElectronicReadingRoom.Client.csproj": {
+                "projectPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Client\\ElectronicReadingRoom.Client.csproj"
+              },
+              "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Core\\ElectronicReadingRoom.Core.csproj": {
+                "projectPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Core\\ElectronicReadingRoom.Core.csproj"
+              },
+              "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Data\\ElectronicReadingRoom.Data.csproj": {
+                "projectPath": "C:\\Users\\miste\\Projects\\ElectronicReadingRoom\\src\\ElectronicReadingRoom.Data\\ElectronicReadingRoom.Data.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Components.WebAssembly.Server": {
+              "target": "Package",
+              "version": "[8.0.19, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.424/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

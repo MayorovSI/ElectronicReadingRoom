@@ -1,0 +1,155 @@
+@page "/genres"
+@inject ApiService ApiService
+@inject ModeService ModeService
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<PageTitle>Управление жанрами</PageTitle>
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/catalog">Каталог</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Жанры</li>
+    </ol>
+</nav>
+
+<h1 class="mb-4">Управление жанрами</h1>
+
+<div class="card genre-add-card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Добавить жанр</h5>
+        <div class="row g-2 align-items-end">
+            <div class="col-lg-6 col-md-8">
+                <label class="form-label visually-hidden">Название жанра</label>
+                <input type="text" class="form-control" @bind="_newGenreName"
+                       placeholder="Название нового жанра" />
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary" @onclick="CreateGenre">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (_genres.Any())
+{
+    <div class="table-responsive genre-table">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col" class="genre-id-column">ID</th>
+                    <th scope="col">Название</th>
+                    <th scope="col" class="genre-actions-column">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var genre in _genres)
+                {
+                    <tr class="@(_editingId == genre.Id ? "genre-row-editing" : "")">
+                        <td class="text-muted">@genre.Id</td>
+                        <td>
+                            @if (_editingId == genre.Id)
+                            {
+                                <div class="d-flex align-items-center gap-1">
+                                     <input type="text" class="form-control form-control-sm genre-edit-input"
+                                         @bind="_editingName" />
+                                    <button class="btn btn-sm btn-success" @onclick="() => SaveGenre(genre.Id)"
+                                            title="Сохранить">&#10003;</button>
+                                    <button class="btn btn-sm btn-outline-secondary" @onclick="CancelEdit"
+                                            title="Отмена">&#10005;</button>
+                                </div>
+                            }
+                            else
+                            {
+                                @genre.Name
+                            }
+                        </td>
+                        <td>
+                            @if (_editingId != genre.Id)
+                            {
+                                <button class="btn btn-sm btn-outline-primary me-1" @onclick="() => StartEdit(genre)">
+                                    Редактировать
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteGenre(genre.Id)">
+                                    Удалить
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">Жанры отсутствуют. Добавьте первый жанр выше.</div>
+}
+
+@code {
+    private List<Genre> _genres = [];
+    private string _newGenreName = "";
+    private int? _editingId;
+    private string _editingName = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!ModeService.IsLibrarian)
+        {
+            Navigation.NavigateTo("/catalog");
+            return;
+        }
+
+        ModeService.ModeChanged += HandleModeChanged;
+        _genres = await ApiService.GetAllGenresAsync();
+    }
+
+    private void HandleModeChanged()
+    {
+        if (!ModeService.IsLibrarian)
+            Navigation.NavigateTo("/catalog");
+    }
+
+    public void Dispose() => ModeService.ModeChanged -= HandleModeChanged;
+
+    private async Task CreateGenre()
+    {
+        if (string.IsNullOrWhiteSpace(_newGenreName)) return;
+        try
+        {
+            await ApiService.CreateGenreAsync(_newGenreName);
+            _newGenreName = "";
+            _genres = await ApiService.GetAllGenresAsync();
+        }
+        catch (HttpRequestException)
+        {
+            // Genre already exists — could show an alert
+        }
+    }
+
+    private void StartEdit(Genre genre)
+    {
+        _editingId = genre.Id;
+        _editingName = genre.Name;
+    }
+
+    private void CancelEdit()
+    {
+        _editingId = null;
+        _editingName = "";
+    }
+
+    private async Task SaveGenre(int id)
+    {
+        await ApiService.UpdateGenreAsync(id, _editingName);
+        _editingId = null;
+        _editingName = "";
+        _genres = await ApiService.GetAllGenresAsync();
+    }
+
+    private async Task DeleteGenre(int id)
+    {
+        await ApiService.DeleteGenreAsync(id);
+        _genres = await ApiService.GetAllGenresAsync();
+    }
+}

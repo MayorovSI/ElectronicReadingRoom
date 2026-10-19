@@ -1,0 +1,78 @@
+﻿@inherits LayoutComponentBase
+@inject ModeService ModeService
+@implements IDisposable
+
+<nav class="navbar navbar-expand-lg navbar-toggleable-sm navbar-light library-navbar mb-3">
+    <div class="container">
+        <span class="navbar-brand fw-bold"><span aria-hidden="true">📖</span> Электронный читальный зал</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav"
+                aria-controls="main-nav" aria-expanded="false" aria-label="Открыть меню">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="main-nav">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/catalog">
+                        Каталог
+                    </NavLink>
+                </li>
+                @if (ModeService.IsLibrarian)
+                {
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/documents/add">
+                            Добавить документ
+                        </NavLink>
+                    </li>
+                    <li class="nav-item">
+                        <NavLink class="nav-link" href="/genres">
+                            Жанры
+                        </NavLink>
+                    </li>
+                }
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/">
+                        Сменить роль
+                    </NavLink>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
+                <span class="mode-badge @(ModeService.IsLibrarian ? "mode-librarian" : "mode-reader")">
+                    <span aria-hidden="true">@(ModeService.IsLibrarian ? "📚" : "📖")</span> @GetModeLabel()
+                </span>
+                <div class="mode-switch" role="group" aria-label="Режим работы">
+                    <button type="button" class="mode-switch-button @(ModeService.IsLibrarian ? "" : "active")"
+                            aria-pressed="@(!ModeService.IsLibrarian)" @onclick="() => SetMode(AppMode.Reader)">
+                        <span aria-hidden="true">📖</span><span class="visually-hidden">Читатель</span>
+                    </button>
+                    <button type="button" class="mode-switch-button @(ModeService.IsLibrarian ? "active" : "")"
+                            aria-pressed="@ModeService.IsLibrarian" @onclick="() => SetMode(AppMode.Librarian)">
+                        <span aria-hidden="true">📚</span><span class="visually-hidden">Библиотекарь</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <main role="main" class="content pb-3">
+        @Body
+    </main>
+</div>
+
+@code {
+    private void SetMode(AppMode mode) => ModeService.SetMode(mode);
+
+    private string GetModeLabel() =>
+        ModeService.CurrentMode == AppMode.Librarian ? "Библиотекарь" : "Читатель";
+
+    protected override void OnInitialized()
+    {
+        ModeService.ModeChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        ModeService.ModeChanged -= StateHasChanged;
+    }
+}

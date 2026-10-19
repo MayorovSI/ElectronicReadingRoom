@@ -1,0 +1,150 @@
+@page "/documents/{id:int}"
+@inject ApiService ApiService
+@inject ModeService ModeService
+@implements IDisposable
+
+<PageTitle>@(document?.Title ?? "Документ")</PageTitle>
+
+@if (document is null)
+{
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+        </div>
+    </div>
+}
+else
+{
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/catalog">Каталог</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@document.Title</li>
+        </ol>
+    </nav>
+
+    <h1 class="mb-4">@document.Title</h1>
+
+    <section class="doc-detail mb-4" aria-label="Сведения о документе">
+        <div class="doc-detail-header">
+            <h2 class="h4 mb-0">Сведения о документе</h2>
+        </div>
+        <div class="doc-detail-body">
+            <div class="doc-detail-row">
+                <span class="doc-detail-label"><span aria-hidden="true">👤</span> Авторы</span>
+                <span class="doc-detail-value">@string.Join(", ", document.DocumentAuthors.Select(da => da.Author.Name))</span>
+            </div>
+            <div class="doc-detail-row">
+                <span class="doc-detail-label"><span aria-hidden="true">📅</span> Год издания</span>
+                <span class="doc-detail-value">@document.Year</span>
+            </div>
+
+                @if (!string.IsNullOrWhiteSpace(document.Publisher))
+                {
+                    <div class="doc-detail-row"><span class="doc-detail-label"><span aria-hidden="true">🏢</span> Издательство</span><span class="doc-detail-value">@document.Publisher</span></div>
+                }
+
+                @if (document.DocumentGenres.Any())
+                {
+                    <div class="doc-detail-row">
+                    <span class="doc-detail-label"><span aria-hidden="true">🏷️</span> Жанры</span>
+                    <span class="doc-detail-value">
+                        @foreach (var dg in document.DocumentGenres)
+                        {
+                            <span class="badge bg-secondary me-1">@(dg.Genre?.Name ?? "Жанр недоступен")</span>
+                        }
+                    </span>
+                    </div>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(document.Annotation))
+                {
+                    <div class="doc-detail-row"><span class="doc-detail-label">Аннотация</span><span class="doc-detail-value">@document.Annotation</span></div>
+                }
+
+                @if (document.File is not null)
+                {
+                    <div class="doc-detail-row">
+                        <span class="doc-detail-label"><span aria-hidden="true">📄</span> Формат</span>
+                        <span class="doc-detail-value"><span class="badge-format badge-@document.File.Format.ToLowerInvariant()">@(document.File.Format.ToUpperInvariant())</span></span>
+                    </div>
+                    <div class="doc-detail-row">
+                        <span class="doc-detail-label"><span aria-hidden="true">📏</span> Размер</span>
+                        <span class="doc-detail-value">@FormatFileSize(document.File.Size)</span>
+                    </div>
+                }
+        </div>
+        <div class="doc-actions">
+        @if (document.File is not null)
+        {
+            <a class="btn btn-primary" href="/viewer/@document.Id">
+                <span aria-hidden="true">📖</span> Читать
+            </a>
+            <a class="btn btn-outline-primary" href="/api/documents/@document.Id/download" download>
+                <span aria-hidden="true">⬇</span> Скачать
+            </a>
+        }
+        @if (ModeService.IsLibrarian)
+        {
+            <a class="btn btn-outline-secondary" href="/documents/@document.Id/edit">
+                <span aria-hidden="true">✏️</span> Редактировать
+            </a>
+            <button class="btn btn-outline-danger" @onclick="ShowDeleteConfirm"><span aria-hidden="true">🗑️</span> Удалить</button>
+        }
+        <a class="btn btn-outline-secondary" href="/catalog">Назад в каталог</a>
+        </div>
+    </section>
+
+    @if (_showDeleteConfirm)
+    {
+        <div class="modal fade show d-block delete-modal-backdrop" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Подтверждение удаления</h5>
+                        <button type="button" class="btn-close" @onclick="HideDeleteConfirm"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Вы уверены, что хотите удалить документ <strong>«@document.Title»</strong>?</p>
+                        <p class="text-danger mb-0">Это действие нельзя отменить.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="HideDeleteConfirm">Отмена</button>
+                        <button type="button" class="btn btn-danger" @onclick="DeleteDocument">Удалить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private Document? document;
+    private bool _showDeleteConfirm;
+
+    private static string FormatFileSize(long size) => size < 1024 * 1024
+        ? $"{size / 1024d:N0} КБ"
+        : $"{size / (1024d * 1024):N1} МБ";
+
+    protected override async Task OnInitializedAsync()
+    {
+        ModeService.ModeChanged += StateHasChanged;
+        document = await ApiService.GetDocumentAsync(Id);
+    }
+
+    public void Dispose()
+    {
+        ModeService.ModeChanged -= StateHasChanged;
+    }
+
+    private void ShowDeleteConfirm() => _showDeleteConfirm = true;
+    private void HideDeleteConfirm() => _showDeleteConfirm = false;
+
+    private async Task DeleteDocument()
+    {
+        await ApiService.DeleteDocumentAsync(Id);
+        Navigation.NavigateTo("/catalog");
+    }
+
+    [Inject] NavigationManager Navigation { get; set; } = default!;
+}

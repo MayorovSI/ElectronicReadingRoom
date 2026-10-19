@@ -1,0 +1,17 @@
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\bin\Release\net8.0\ElectronicReadingRoom.Data.deps.json
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\bin\Release\net8.0\ElectronicReadingRoom.Data.runtimeconfig.json
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\bin\Release\net8.0\ElectronicReadingRoom.Data.dll
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\bin\Release\net8.0\ElectronicReadingRoom.Data.pdb
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\bin\Release\net8.0\ElectronicReadingRoom.Core.dll
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\bin\Release\net8.0\ElectronicReadingRoom.Core.pdb
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\obj\Release\net8.0\ElectronicReadingRoom.Data.csproj.AssemblyReference.cache
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\obj\Release\net8.0\ElectronicReadingRoom.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\obj\Release\net8.0\ElectronicReadingRoom.Data.AssemblyInfoInputs.cache
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\obj\Release\net8.0\ElectronicReadingRoom.Data.AssemblyInfo.cs
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\obj\Release\net8.0\ElectronicReadingRoom.Data.csproj.CoreCompileInputs.cache
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\obj\Release\net8.0\Electron.9171C203.Up2Date
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\obj\Release\net8.0\ElectronicReadingRoom.Data.dll
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\obj\Release\net8.0\refint\ElectronicReadingRoom.Data.dll
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\obj\Release\net8.0\ElectronicReadingRoom.Data.pdb
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\obj\Release\net8.0\ElectronicReadingRoom.Data.genruntimeconfig.cache
+C:\Users\miste\Projects\ElectronicReadingRoom\src\ElectronicReadingRoom.Data\obj\Release\net8.0\ref\ElectronicReadingRoom.Data.dll
